@@ -24,6 +24,25 @@
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 value="" placeholder="imageurl" required="">
                         </div>
+                        <div class="sm:col-span-2">
+                            <label for="imageurl"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Technologies</label>
+
+                            <div class="flex gap-4 items-center flex-wrap mb-5">
+
+                                @foreach ($technologies as $technology)
+                                    <input name="technologies[]" class="text-sm font-medium" type="checkbox"
+                                        value="{{ $technology->id }}" id="technology-{{ $technology->id }}"
+                                        @checked(in_array($technology->id, old('technologies', [])))>
+                                    <label class="text-sm font-medium text-white" for="technology-{{ $technology->id }}">
+                                        {{ $technology->name }}
+                                    </label>
+                                @endforeach
+
+
+
+                            </div>
+                        </div>
                         <div class="w-full">
                             <label for="mainlanguage"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Main

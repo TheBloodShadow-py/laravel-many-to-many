@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTypeRequest;
 use App\Http\Requests\UpdateTypeRequest;
 use App\Models\Project;
+use App\Models\Technology;
 use App\Models\Type;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,8 @@ class ProjectController extends Controller
     public function create()
     {
         $types = Type::all();
-        return view('admin.create', compact('types'));
+        $technologies = Technology::orderBy('name', 'ASC')->get();
+        return view('admin.create', compact('types', 'technologies'));
     }
 
     /**
@@ -54,7 +56,8 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::all();
-        return view('admin.edit', compact('project', 'types'));
+        $technologies = Technology::orderBy('name', 'ASC')->get();
+        return view('admin.edit', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -63,7 +66,20 @@ class ProjectController extends Controller
     public function update(UpdateTypeRequest $request, Project $project)
     {
         $data = $request->all();
-        $project->update($data);
+
+        $project->update([
+            'title' => $data['title'],
+            'imageurl' => $data['imageurl'],
+            'mainlanguage' => $data['mainlanguage'],
+            'stars' => $data['stars'],
+            'type_id' => $data['type_id'],
+        ]);
+
+        if (isset($data['technologies'])) {
+            $project->technology()->sync($data['technologies']);
+        } else {
+            $project->technology()->detach();
+        }
 
         return redirect()->route('project', $project->id);
     }
@@ -74,6 +90,7 @@ class ProjectController extends Controller
     public function delete(Project $project)
     {
         $project->delete();
+        $project->technology()->sync([]);
         return redirect()->route('dashboard');
     }
 }

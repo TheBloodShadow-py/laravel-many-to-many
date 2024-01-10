@@ -22,6 +22,17 @@
                     <span class="font-bold  text-[#eb4432]">Stars = </span>
                     {{ $project->stars }}
                 </li>
+                <li>
+                    <span class="font-bold  text-[#eb4432]">Technologies = </span>
+                    <ul>
+                        @forelse ($project->technology as $tech)
+                            <li>- {{ $tech->name }}</li>
+                        @empty
+                            <li>No technologies found</li>
+                        @endforelse
+                    </ul>
+                </li>
+
             </ul>
         </div>
         @if (isset(Auth::user()->name))
